@@ -1,0 +1,1 @@
+This was a challenging project. Here we were provided with an array of fictional employees. We had to iterate through the array, and cause each employee to appear as a row in a sortable table with pagination. Adding each employee as a row is simple enough.
