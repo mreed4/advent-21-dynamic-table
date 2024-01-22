@@ -1,4 +1,4 @@
-const data = [
+let employees = [
   {
     id: 1,
     name: "Cameron Williamson",
@@ -181,4 +181,4 @@ const data = [
   },
 ];
 
-export { data };
+export { employees };
