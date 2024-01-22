@@ -11,18 +11,40 @@ function addEventListeners() {
   const pagination = document.querySelector(".pagination");
   const paginationButtons = pagination.querySelectorAll("button");
   const tableHeaders = document.querySelectorAll("thead tr th");
+  const pageNumberInput = document.querySelector("#currentPage");
+
+  pageNumberInput.addEventListener("change", (event) => {
+    const validPageNumbers = Array.from({ length: Math.ceil(employees.length / 10) }, (_, index) => index + 1);
+    // console.log(validPageNumbers);
+
+    if (
+      event.target.value === "" || // Empty string
+      isNaN(Number(event.target.value)) || // Not a number
+      !Number.isInteger(Number(event.target.value)) || // Not an integer
+      Number(event.target.value) < 1 || // Less than 1
+      Number(event.target.value) > validPageNumbers.length // Greater than the number of pages
+      // event.target.value.test(/[^0-9]/g) // Contains non-numeric characters
+    ) {
+      console.log("Invalid page number");
+      return;
+    }
+
+    if (validPageNumbers.includes(Number(event.target.value))) {
+      handlePageInputChange(event);
+    }
+  });
 
   paginationButtons.forEach((button) => {
-    button.addEventListener("click", handlePagination);
+    button.addEventListener("click", handleArrowKeys);
   });
 
   document.addEventListener("keyup", (event) => {
     if (event.ctrlKey && event.key === "ArrowLeft") {
-      handlePagination({ target: { parentElement: { id: "previous" } } });
+      handleArrowKeys({ target: { parentElement: { id: "previous" } } });
     }
 
     if (event.ctrlKey && event.key === "ArrowRight") {
-      handlePagination({ target: { parentElement: { id: "next" } } });
+      handleArrowKeys({ target: { parentElement: { id: "next" } } });
     }
   });
 
@@ -36,7 +58,7 @@ function renderTableRows(data, start = 0, end = 10) {
   tableBody.innerHTML = ""; // Clear the table body
   const employees = data;
 
-  employees.slice(start, end).forEach((employee) => {
+  employees.slice(start, end).forEach((employee, i) => {
     const row = document.createElement("tr");
     row.classList.add("employee");
     row.innerHTML = `
@@ -56,6 +78,27 @@ function renderTableRows(data, start = 0, end = 10) {
     `;
     tableBody.appendChild(row);
   });
+}
+
+function handlePageInputChange(event) {
+  const pageNumber = Number(event.target.value);
+  const maxPageNumber = Math.ceil(employees.length / 10);
+  const start = (pageNumber - 1) * 10;
+  const end = pageNumber * 10;
+
+  if (pageNumber > maxPageNumber) {
+    event.target.value = maxPageNumber;
+    renderTableRows(employees_, (maxPageNumber - 1) * 10, maxPageNumber * 10);
+    return;
+  }
+
+  if (pageNumber < 1) {
+    event.target.value = 1;
+    renderTableRows(employees_, 0, 10);
+    return;
+  }
+
+  renderTableRows(employees_, start, end);
 }
 
 function handleSorting(event) {
@@ -88,7 +131,7 @@ function handleSorting(event) {
   }
 }
 
-function handlePagination(event) {
+function handleArrowKeys(event) {
   const pageNumberInput = document.querySelector("#currentPage");
   const totalPages = document.querySelector("#totalPages");
   const pageNumber = Number(pageNumberInput.value);
