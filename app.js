@@ -8,6 +8,7 @@ import { data } from "./data.js";
 function addEventListeners() {
   const pagination = document.querySelector(".pagination");
   const paginationButtons = pagination.querySelectorAll("button");
+  const tableHeaders = document.querySelectorAll("thead tr th");
 
   paginationButtons.forEach((button) => {
     button.addEventListener("click", handlePagination);
@@ -21,6 +22,40 @@ function addEventListeners() {
     if (event.ctrlKey && event.key === "ArrowRight") {
       handlePagination({ target: { parentElement: { id: "next" } } });
     }
+  });
+
+  tableHeaders.forEach((header) => {
+    header.addEventListener("click", (event) => {
+      const allSortButtons = document.querySelectorAll("button.sort");
+      const button = event.currentTarget.children[0];
+      const columnName = button.id.replace("sort__", "");
+
+      if (!button.classList.contains("ascending")) {
+        allSortButtons.forEach((sortButton) => {
+          sortButton.classList.remove("ascending");
+          sortButton.classList.remove("descending");
+        });
+        button.classList.add("ascending");
+        sortTableByColumn(columnName, "ascending");
+        return;
+      }
+
+      if (button.classList.contains("ascending")) {
+        button.classList.remove("ascending");
+        button.classList.add("descending");
+        sortTableByColumn(columnName, "descending");
+        return;
+      }
+
+      if (button.classList.contains("descending")) {
+        button.classList.remove("descending");
+        button.classList.add("ascending");
+        sortTableByColumn(columnName, "ascending");
+        return;
+      }
+
+      // sortTableByColumn(columnName, order);
+    });
   });
 }
 
@@ -42,12 +77,7 @@ function renderTableRows(data, start = 0, end = 10) {
           <input type="text" disabled name="person-title-${item.id}" value="${item.title}" />
         </td>
         <td class="actions">
-          <button class="update" name="person-update-${item.id} id="personUpdate${item.id}">
-            <img src="./images/update.svg" alt="Update" class="update" />
-          </button>
-          <button class="edit" name="person-edit-${item.id}" id="personEdit${item.id}">
-            <img src="./images/edit.svg" alt="Edit" class="edit" />
-          </button>
+          
         </td>
     `;
     tableBody.appendChild(row);
@@ -83,14 +113,16 @@ function handlePagination(event) {
   }
 }
 
-function sortTableByColumn(columnName, order = "asc") {
+function sortTableByColumn(columnName, order = "ascending") {
   const sortedData = data.sort((a, b) => {
-    if (order === "asc") {
+    if (order === "ascending") {
       return a[columnName] > b[columnName] ? 1 : -1;
-    } else {
+    }
+
+    if (order === "descending") {
       return a[columnName] < b[columnName] ? 1 : -1;
     }
   });
 
-  renderTableRows();
+  renderTableRows(sortedData);
 }

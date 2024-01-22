@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 :root {
-  --primary: #363DAA;
-  --selected: #363DAA;
-  --unselected: #DDE8F7;
+  --primary: #363daa;
+  --selected: #363daa;
+  --unselected: #dde8f7;
 }
 
 body {
@@ -14,7 +14,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .wrapper {
@@ -27,6 +27,8 @@ th {
   padding-right: 12px;
   padding-left: 18px;
   font-size: 18px;
+  cursor: pointer;
+  user-select: none;
 }
 
 th.header__id {
@@ -34,7 +36,7 @@ th.header__id {
 }
 
 td {
-  border-bottom: 2px solid #DDE8F7;
+  border-bottom: 2px solid #dde8f7;
   padding: 5px 0;
 }
 
@@ -78,7 +80,7 @@ input[type="email"] {
 
 .edit input[type="text"],
 .edit input[type="email"] {
-  background: #EDF4F9;
+  background: #edf4f9;
 }
 
 .name input[type="text"] {
